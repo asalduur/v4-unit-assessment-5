@@ -1,6 +1,6 @@
 module.exports = {
     readPosts: async (req, res) => {
-      let { id } = req.session.user;
+      let { user_id } = req.session.user;
       let { mine, search, oldest } = req.query;
       const db = await req.app.get('db')
       if (mine && !search) {
@@ -13,10 +13,10 @@ module.exports = {
         }
       } else if (!mine && search) {
         if (oldest) {
-          db.search.search_other_oldest_first([`%${search.toLowerCase()}%`, id])
+          db.search.search_other_oldest_first([`%${search.toLowerCase()}%`, user_id])
             .then(posts => res.status(200).send(posts))
         } else {
-          db.search.search_other_users_posts([`%${search.toLowerCase()}%`, id])
+          db.search.search_other_users_posts([`%${search.toLowerCase()}%`, user_id])
             .then(posts => res.status(200).send(posts))
         }
       } else if (mine && search) {
@@ -29,16 +29,27 @@ module.exports = {
         }
       } else {
         if (oldest) {
-          db.post.read_other_oldest_first([id])
+          db.post.read_other_oldest_first([user_id])
             .then(posts => res.status(200).send(posts))
         } else {
-          db.post.read_other_users_posts([id])
+          db.post.read_other_users_posts([user_id])
             .then(posts => res.status(200).send(posts))
         }
       }
     },
     createPost: (req, res) => {
-      //code here
+      const db = req.app.get('db')
+      const {user_id} = req.session.user
+      const {title, img, content} = req.body
+      const date = new Date()
+      console.log(user_id)
+      if (user_id){
+        db.post.create_post([user_id, title, img, content, date])
+        .then( () => res.sendStatus(200))
+      }
+      else {
+        res.sendStatus(403)
+      }
     },
     readPost: (req, res) => {
       req.app.get('db').post.read_post(req.params.id)
