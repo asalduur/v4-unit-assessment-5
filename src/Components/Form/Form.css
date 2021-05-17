@@ -43,3 +43,9 @@
     font-family: 'Open Sans','Courier New', Courier, monospace;
     font-size: 12px;
   }
+
+  @media (max-width: 480px) {
+    img.form-img-prev{
+      height: 180px;
+    }
+  }

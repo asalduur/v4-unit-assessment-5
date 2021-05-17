@@ -71,3 +71,15 @@
     justify-content: space-around;
     width: 55%;
   }
+
+  .dark-button {
+    margin: 40px;
+    margin-bottom: 120px;
+  }
+
+  @media (max-width: 480px)  {
+    div.auth-container{
+      box-shadow: none;
+      background-image: none;
+    };
+  }
